@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prolerus</title>
+    <link rel="stylesheet" href="learn-more.css">
+</head>
+<body>
+    <header>
+        <h2 class="empty"></h2>
+        <h1 class = "heading"> Prolerus </h1>
+        <div class="image">
+            <img class="logo" src="prolerus logo it6.png" alt="Logo" width="90" height="90" />
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class = "s1">
+            <section class="section">
+                    <p class="line1">Supporting the classroom <b>evolution</b> that the education system has longed</p> 
+            </section>
+            <div class = "spacer layer1"></div>
+        </div>
+        
+
+        <div class = "s2">
+            <section class="section">
+                <div class="content">
+                    <p><b>Proven</b> to be one of the most effective methods of education, learning by teaching sustains academic success & personal development</p>   
+                </div>
+            </section>
+            <div class = "spacer layer2"></div>
+        </div>
+        
+        <div class = "s3">
+            <section class="section">
+                <div class="content">
+                    <p>Prolerus streamlines the learning by teaching method, ensuring <b>seamless</b> student-teacher interaction</p>
+                </div>
+            </section>
+            <div class = "spacer layer3"></div>
+        </div>
+        
+        <div class = "s4"> 
+            <section class="section">
+                <div class="content">
+                    <p class="line1">Get in touch <b> now </b> at<br></p> 
+                    <p class="line3">prolerus@gmail.com</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        const sections = document.querySelectorAll('.section');
+        
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.5
+        });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="student-.css">
+</head>
+<body>
+    <header>
+        <div class="profile-icon">
+            <button class="dropbtn">
+                <a id="firstNameInitial"></a> <a id="firstName"></a>
+            </button>
+            <div class="dropdown-content">
+                <a href="sign-in.html" id="signOutButton">
+                    Sign Out <i class="fas fa-sign-out-alt"></i>
+                </a>
+                <hr>
+                <a href="account.html" id="accountButton">
+                    Account <i class="fas fa-user"></i>
+                </a>
+            </div>
+        </div>   
+        
+        <div class="heading">
+            <h2>Your Dashboard</h2>
+        </div>
+
+        <div class="image">
+            <a href="learn-more.html">
+            <img src="prolerus logo it6.png" alt="Logo" width="90" height="90" />
+            </a>
+        </div>
+    </header>
+
+    <!-- Search Bar outside the video card -->
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search for videos..." />
+    </div>
+
+    <div class="video-card" id="videoCard">
+        <!-- Class code folders and videos will be displayed here -->
+    </div>
+    <div id="videoErrorMessage" class="error-message"></div>
+    
+    <button class="upload" onclick="location.href='upload-.html'">
+        <i class="fas fa-upload"></i> Upload
+    </button>
+    
+    <script>
+        let currentOpenClassCode = null;
+        let currentClassVideos = null;
+
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        window.onclick = function(event) {
+    if (!event.target.matches('.profile-icon') && !event.target.closest('.dropdown-content')) {
+        const dropdowns = document.getElementsByClassName("dropdown-content");
+        for (let i = 0; i < dropdowns.length; i++) {
+            dropdowns[i].style.display = "none";
+        }
+    }
+};
+
+// Add event listeners to both dropbtn and dropdown-content
+const dropbtn = document.querySelector('.dropbtn');
+const dropdownContent = document.querySelector('.dropdown-content');
+
+let dropdownTimeout;
+
+dropbtn.addEventListener('mouseenter', function() {
+    clearTimeout(dropdownTimeout);
+    dropdownContent.style.display = "block";
+});
+
+dropbtn.addEventListener('mouseleave', function() {
+    // Start timeout when leaving dropbtn
+    dropdownTimeout = setTimeout(() => {
+        dropdownContent.style.display = "none";
+    }, 100); // 100ms delay to allow moving to dropdown
+});
+
+dropdownContent.addEventListener('mouseenter', function() {
+    clearTimeout(dropdownTimeout);
+    dropdownContent.style.display = "block";
+});
+
+dropdownContent.addEventListener('mouseleave', function() {
+    dropdownContent.style.display = "none";
+});
+
+        function createVideoItem(video, folderContent) {
+            const videoItem = document.createElement('div');
+            videoItem.className = 'video-item';
+
+            const videoPlayer = document.createElement('video');
+            videoPlayer.controls = true;
+            const videoId = video._id;
+            videoPlayer.src = `/videos.files/${videoId}`;
+            videoPlayer.type = video.metadata.contentType;
+
+            const title = document.createElement('h3');
+            title.className = 'video-title';
+            title.innerText = video.metadata.title;
+
+            const subject = document.createElement('p');
+            subject.className = 'video-subject';
+            subject.innerText = video.metadata.subject;
+
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'delete-button';
+            deleteButton.innerText = 'Delete';
+            deleteButton.onclick = () => deleteVideo(videoId);
+
+            videoItem.appendChild(videoPlayer);
+            videoItem.appendChild(title);
+            videoItem.appendChild(subject);
+            videoItem.appendChild(deleteButton);
+
+            folderContent.appendChild(videoItem);
+            videoPlayer.load();
+        }
+
+        function filterAndDisplayVideos(videos, folderContent, searchTerm = '') {
+            folderContent.innerHTML = '';
+            const filteredVideos = videos.filter(video =>
+                video.metadata.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                video.metadata.subject.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            filteredVideos.forEach(video => createVideoItem(video, folderContent));
+        }
+
+        function createClassCodeFolder(classCode, videos) {
+            const classFolder = document.createElement('div');
+            classFolder.className = 'folder';
+            classFolder.innerHTML = `
+                <div><i class="fas fa-folder"></i> ${classCode}</div>
+                <i class="fas fa-chevron-down arrow-icon"></i>
+            `;
+            
+            const classFolderContent = document.createElement('div');
+            classFolderContent.className = 'folder-content';
+            classFolderContent.style.display = 'none';
+            classFolderContent.style.gridTemplateColumns = 'repeat(auto-fill, minmax(150px, 1fr))';
+            classFolderContent.style.gap = '10px';
+
+            classFolder.onclick = function() {
+                if (currentOpenClassCode === classCode) {
+                    this.classList.toggle('active');
+                    classFolderContent.style.display = 
+                        classFolderContent.style.display === 'none' ? 'grid' : 'none';
+                } else {
+                    // Close previously open folder if exists
+                    if (currentOpenClassCode) {
+                        const prevFolder = document.querySelector('.folder.active');
+                        if (prevFolder) {
+                            prevFolder.classList.remove('active');
+                            prevFolder.nextElementSibling.style.display = 'none';
+                        }
+                    }
+                    // Open new folder
+                    this.classList.add('active');
+                    classFolderContent.style.display = 'grid';
+                    currentOpenClassCode = classCode;
+                    currentClassVideos = videos;
+                    // Apply current search term if exists
+                    const searchTerm = document.getElementById('searchInput').value;
+                    filterAndDisplayVideos(videos, classFolderContent, searchTerm);
+                }
+            };
+
+            videoCard.appendChild(classFolder);
+            videoCard.appendChild(classFolderContent);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const email = sessionStorage.getItem('userEmail');
+            if (!email) {
+                document.getElementById('videoErrorMessage').innerText = 'User not authenticated';
+                return;
+            }
+
+            // Fetch user details
+            fetch(`/user-info?email=${encodeURIComponent(email)}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(user => {
+                    if (user.firstName) {
+                        document.getElementById('firstNameInitial').innerText = user.firstName.charAt(0).toUpperCase();
+                        document.getElementById('firstName').innerText = `Welcome ${user.firstName}`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user details:', error);
+                    document.getElementById('videoErrorMessage').innerText = 'Failed to load user details.';
+                });
+
+            // Fetch videos
+            fetch(`/videos?email=${encodeURIComponent(email)}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(videos => {
+                    const videoCard = document.getElementById('videoCard');
+                    videos.reverse();
+
+                    // Group videos by class code
+                    const groupedVideos = {};
+                    videos.forEach(video => {
+                        const classCode = video.metadata.classCode;
+                        if (!groupedVideos[classCode]) {
+                            groupedVideos[classCode] = [];
+                        }
+                        groupedVideos[classCode].push(video);
+                    });
+
+                    // Create folders for each class code
+                    Object.keys(groupedVideos).forEach(classCode => {
+                        createClassCodeFolder(classCode, groupedVideos[classCode]);
+                    });
+
+                    // Search functionality
+                    const searchInput = document.getElementById('searchInput');
+                    searchInput.addEventListener('input', () => {
+                        const searchTerm = searchInput.value;
+                        // Only filter videos if a class folder is open
+                        if (currentClassVideos) {
+                            const openClassContent = document.querySelector('.folder.active + .folder-content');
+                            if (openClassContent) {
+                                filterAndDisplayVideos(currentClassVideos, openClassContent, searchTerm);
+                            }
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching videos:', error);
+                    document.getElementById('videoErrorMessage').innerText = 'Failed to load videos.';
+                });
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

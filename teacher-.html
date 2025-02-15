@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- [Previous head and header sections remain the same] -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="teacher-.css">
+</head>
+<body>
+    <header>
+        <div class="profile-icon">
+            <button class="dropbtn">
+                <a id="firstNameInitial"></a> <a id="firstName"></a>
+            </button>
+            <div class="dropdown-content">
+                <a href="sign-in.html" id="signOutButton">
+                    Sign Out <i class="fas fa-sign-out-alt"></i>
+                </a>
+                <hr>
+                <a href="account.html" id="accountButton">
+                    Account <i class="fas fa-user"></i>
+                </a>
+            </div>
+        </div>   
+        
+        <div class="heading">
+            <h2>Your Dashboard</h2>
+        </div>
+
+        <div class="image">
+            <a href="learn-more.html">
+            <img src="prolerus logo it6.png" alt="Logo" width="90" height="90" />
+            </a>
+        </div>
+    </header>
+
+    <!-- Search Bar outside the video card -->
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search for videos..." />
+    </div>
+
+    <div class="video-card" id="videoCard">
+        <!-- Class code folders and videos will be displayed here -->
+    </div>
+    <div id="videoErrorMessage" class="error-message"></div>
+    
+    <script>
+        let currentOpenClassCode = null;
+        let currentOpenStudent = null;
+        let currentStudentVideos = null;
+
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        window.onclick = function(event) {
+    if (!event.target.matches('.profile-icon') && !event.target.closest('.dropdown-content')) {
+        const dropdowns = document.getElementsByClassName("dropdown-content");
+        for (let i = 0; i < dropdowns.length; i++) {
+            dropdowns[i].style.display = "none";
+        }
+    }
+};
+
+// Add event listeners to both dropbtn and dropdown-content
+const dropbtn = document.querySelector('.dropbtn');
+const dropdownContent = document.querySelector('.dropdown-content');
+
+let dropdownTimeout;
+
+dropbtn.addEventListener('mouseenter', function() {
+    clearTimeout(dropdownTimeout);
+    dropdownContent.style.display = "block";
+});
+
+dropbtn.addEventListener('mouseleave', function() {
+    // Start timeout when leaving dropbtn
+    dropdownTimeout = setTimeout(() => {
+        dropdownContent.style.display = "none";
+    }, 100); // 100ms delay to allow moving to dropdown
+});
+
+dropdownContent.addEventListener('mouseenter', function() {
+    clearTimeout(dropdownTimeout);
+    dropdownContent.style.display = "block";
+});
+
+dropdownContent.addEventListener('mouseleave', function() {
+    dropdownContent.style.display = "none";
+});
+
+        function createVideoItem(video, studentFolderContent) {
+            const videoItem = document.createElement('div');
+            videoItem.className = 'video-item';
+
+            const videoPlayer = document.createElement('video');
+            videoPlayer.controls = true;
+            const videoId = video._id;
+            videoPlayer.src = `/videos.files/${videoId}`;
+            videoPlayer.type = video.metadata.contentType;
+
+            const subject = document.createElement('h3');
+            subject.className = 'video-subject';
+            subject.innerText = video.metadata.subject;
+
+            const emailDisplay = document.createElement('p');
+            emailDisplay.className = 'video-email';
+            emailDisplay.innerText = video.metadata.userEmail;
+
+            const blueIcon = document.createElement('span');
+            blueIcon.className = 'new-video-icon';
+            blueIcon.innerText = '🟡';
+            if (!video.metadata.viewed) {
+                videoItem.appendChild(blueIcon);
+            }
+
+            videoItem.appendChild(videoPlayer);
+            videoItem.appendChild(subject);
+            videoItem.appendChild(emailDisplay);
+
+            const downloadLink = document.createElement('a');
+            downloadLink.href = `/videos.files/${videoId}`;
+            downloadLink.download = videoId;
+            downloadLink.innerHTML = '<i class="fas fa-download"></i>';
+            downloadLink.className = 'download-icon';
+            videoItem.appendChild(downloadLink);
+
+            studentFolderContent.appendChild(videoItem);
+            videoPlayer.load();
+
+            videoPlayer.addEventListener('play', () => {
+                if (blueIcon.parentNode) {
+                    videoItem.removeChild(blueIcon);
+                }
+
+                fetch('/videos/view', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id: videoId })
+                })
+                .catch(error => {
+                    console.error('Error marking video as viewed:', error);
+                });
+            });
+        }
+
+        function filterAndDisplayVideos(videos, folderContent, searchTerm = '') {
+            folderContent.innerHTML = '';
+            const filteredVideos = videos.filter(video =>
+                video.metadata.subject.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            filteredVideos.forEach(video => createVideoItem(video, folderContent));
+        }
+
+        function createClassCodeFolder(classCode, students) {
+            const classFolder = document.createElement('div');
+            classFolder.className = 'folder';
+            classFolder.innerHTML = `
+                <div><i class="fas fa-folder"></i> ${classCode}</div>
+                <i class="fas fa-chevron-down arrow-icon"></i>
+            `;
+            
+            const classFolderContent = document.createElement('div');
+            classFolderContent.className = 'folder-content';
+            classFolderContent.style.display = 'none';
+
+            classFolder.onclick = function() {
+                this.classList.toggle('active');
+                classFolderContent.style.display = 
+                    classFolderContent.style.display === 'none' ? 'block' : 'none';
+            };
+
+            Object.keys(students).forEach(studentEmail => {
+                const studentFolder = document.createElement('div');
+                studentFolder.className = 'folder student-folder';
+const firstName = studentEmail.split('@')[0].split('.')[0];
+const capitalizedFirstName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+                studentFolder.innerHTML = `
+                    <div><i class="fas fa-folder"></i> ${capitalizedFirstName}</div>
+                    <i class="fas fa-chevron-down arrow-icon"></i>
+                `;
+                
+                const studentFolderContent = document.createElement('div');
+                studentFolderContent.className = 'folder-content';
+                studentFolderContent.style.display = 'none';
+                studentFolderContent.style.gridTemplateColumns = 'repeat(auto-fill, minmax(150px, 1fr))';
+                studentFolderContent.style.gap = '10px';
+
+                studentFolder.onclick = function(e) {
+                    e.stopPropagation();
+                    this.classList.toggle('active');
+                    studentFolderContent.style.display = 
+                        studentFolderContent.style.display === 'none' ? 'grid' : 'none';
+                    
+                    if (studentFolderContent.style.display === 'grid') {
+                        // Store current student's videos for searching
+                        currentStudentVideos = students[studentEmail];
+                        // Display videos with current search term
+                        const searchTerm = document.getElementById('searchInput').value;
+                        filterAndDisplayVideos(currentStudentVideos, studentFolderContent, searchTerm);
+                    }
+                };
+
+                classFolderContent.appendChild(studentFolder);
+                classFolderContent.appendChild(studentFolderContent);
+            });
+
+            videoCard.appendChild(classFolder);
+            videoCard.appendChild(classFolderContent);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const email = sessionStorage.getItem('userEmail');
+            if (!email) {
+                document.getElementById('videoErrorMessage').innerText = 'User not authenticated';
+                return;
+            }
+
+            // Fetch user details
+            fetch(`/user-info?email=${encodeURIComponent(email)}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(user => {
+                    if (user.firstName) {
+                        document.getElementById('firstNameInitial').innerText = user.firstName.charAt(0).toUpperCase();
+                        document.getElementById('firstName').innerText = `Welcome ${user.firstName}`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user details:', error);
+                    document.getElementById('videoErrorMessage').innerText = 'Failed to load user details.';
+                });
+
+            // Fetch videos
+            fetch(`/videos?email=${encodeURIComponent(email)}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(videos => {
+                    const videoCard = document.getElementById('videoCard');
+                    videos.reverse();
+
+                    // Group videos by class code and student
+                    const groupedVideos = {};
+                    videos.forEach(video => {
+                        const classCode = video.metadata.classCode;
+                        const studentEmail = video.metadata.userEmail;
+                        
+                        if (!groupedVideos[classCode]) {
+                            groupedVideos[classCode] = {};
+                        }
+                        if (!groupedVideos[classCode][studentEmail]) {
+                            groupedVideos[classCode][studentEmail] = [];
+                        }
+                        groupedVideos[classCode][studentEmail].push(video);
+                    });
+
+                    // Create folders for each class code
+                    Object.keys(groupedVideos).forEach(classCode => {
+                        createClassCodeFolder(classCode, groupedVideos[classCode]);
+                    });
+
+                    // Search functionality
+                    const searchInput = document.getElementById('searchInput');
+                    searchInput.addEventListener('input', () => {
+                        const searchTerm = searchInput.value;
+                        // Only filter videos if a student folder is open
+                        if (currentStudentVideos) {
+                            const openStudentContent = document.querySelector('.student-folder.active + .folder-content');
+                            if (openStudentContent) {
+                                filterAndDisplayVideos(currentStudentVideos, openStudentContent, searchTerm);
+                            }
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching videos:', error);
+                    document.getElementById('videoErrorMessage').innerText = 'Failed to load videos.';
+                });
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

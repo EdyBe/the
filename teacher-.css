@@ -1,0 +1,237 @@
+body {
+    font-family: Georgia; /*Arial, sans-serif;*/
+    background-size: cover;
+    background-image: url(./teacher1bg.svg);
+    height: 100vh;
+    color: white;
+    
+}
+
+
+/* Styles for the Teacher dashboard profile icon */
+.profile-icon { 
+    display: flex;
+    flex-direction: row; /* Ensure horizontal alignment */
+    align-items: center; /* Center items vertically */
+    position: relative; /* Set position relative for dropdown positioning */
+    
+}
+
+#firstNameInitial {
+    border-radius: 100px; 
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+#firstName {
+    font-size: 20px;
+    font-weight: normal;
+    margin-left: 10px; /* Add margin to separate from the icon */
+}
+
+
+.search-container {
+    margin: 0 50px;
+    width: fit-content;
+}
+
+#searchInput {
+    display: block;
+    width: 100%; /* Fixed width for a narrower search bar */
+    margin: 0;
+    padding: 10px;
+    border: none;
+    border-radius: 10px 10px 0 0;
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 10px 0 40px rgba(0, 0, 0, 1);
+    font-family: Georgia;
+}
+
+.video-card {
+    display: block;
+    margin: 0 50px 30px 50px;
+    border-radius: 0 0 10px 10px; /* Only round bottom corners */
+    box-shadow: 10px 20px 40px rgba(0, 0, 0, 1);
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    height: 55%;
+    overflow-y: scroll;
+}
+
+.folder {
+    background-color: rgba(34, 238, 187, 0.7);
+    border-radius: 5px;
+    margin: 10px 0;
+    cursor: pointer;
+    padding: 10px;
+    width: 90%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.folder .arrow-icon {
+    transition: transform 0.3s ease;
+}
+
+.folder.active .arrow-icon {
+    transform: rotate(180deg);
+}
+
+.folder i {
+    margin-right: 10px;
+}
+
+.folder:hover {
+    background-color: rgba(34, 238, 187, 0.6);
+}
+
+.student-folder {
+    margin-left: 20px;
+    background-color: rgba(34, 238, 187, 0.7);
+    width: 50%;
+}
+
+.folder-content {
+    display: none;
+    padding: 0px 0;
+}
+
+.folder.active + .folder-content {
+    display: block;
+}
+
+.video-item {
+    position: relative; /* Set position relative for absolute positioning */
+    border: 2px solid #ccc; /* Adjust the color and thickness as needed */
+    border-radius: 8px; /* Optional: Adds rounded corners */
+    padding: 10px; /* Adds space inside the border */
+    margin: 10px 0; /* Adds space between video items */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+.video-item video {
+    width: 100%; /* Set width */
+    height: 150px; /* Set height to match width for square */
+    object-fit: cover; /* Ensure the video covers the area without distortion */
+}
+
+header {
+    display: flex;
+    justify-content: space-between;  /* Left and right elements are spaced apart */
+    align-items: center;
+    position: relative;  /* Ensures absolute positioning works inside */
+    padding: 10px;
+    margin: 0;
+    }
+
+header .heading {
+    position: absolute;  
+    left: 50%;  
+    top: 0px;
+    transform: translateX(-50%);  /* Ensures perfect centering */
+    font-size: 15px;
+    font-weight: bold;
+    
+}
+header .image {
+    flex-shrink: 0; 
+}
+
+.dropbtn{
+    padding: 16px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.1);
+    margin: 5px;
+    margin-right: 120px;
+    display: block;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+
+}
+
+
+
+/* Dropdown styles */
+.dropdown-content {
+    display: none; /* Hidden by default */
+    position: absolute; /* Position it below the profile icon */
+    z-index: 10; /* Ensure it appears above other content */
+    top: 100%; /* Position it below the profile icon */
+    text-align: center;
+    padding: 10px;
+    background-color: rgba(0, 0, 128, 1);
+    margin-right: 120px;
+    max-width: 350px;
+    font-size: 15px;
+    font-weight: bold;
+    border: none;
+    border-radius: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: white; /* Default color */
+}
+
+.dropdown-content a:hover {
+    background-color: rgb(59, 59, 139);
+    border-radius: 10px;
+}
+
+
+
+/* Hover effect for profile elements */
+#firstNameInitial, #firstName {
+    cursor: pointer;
+}
+
+/* Show dropdown on hover over profile elements */
+#firstNameInitial:hover ~ .dropdown-content,
+#firstName:hover ~ .dropdown-content {
+    display: block; /* Show dropdown */
+}
+
+.dropdown{
+    /*position: relative;
+    display: inline-block;*/
+    display: block;
+    margin: auto;
+
+}
+
+
+
+.video-item h3, .video-item p {
+    word-wrap: break-word; /* Allows long words to be broken and wrap onto the next line */
+    overflow-wrap: break-word; /* Ensures that the text will wrap within the container */
+    max-width: 100%; /* Ensures the text does not exceed the width of the container */
+}
+.new-video-icon {
+    position: absolute; /* Positions the icon relative to the nearest positioned ancestor */
+    top: 10px; /* Sets the distance from the top of the video item */
+    right: 10px; /* Sets the distance from the right side of the video item */
+    font-size: 24px; /* Adjusts the size of the icon */
+    color: yellow; /* Sets the color of the icon */ /* does this even do anything? The icon within the code dictates the colour?*/
+}
+
+.download-icon{
+    color: white;
+}
+
+.download-icon:hover{
+    color: blue;
+}

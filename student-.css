@@ -1,0 +1,243 @@
+body {
+    font-family: Georgia; /*Arial, sans-serif*/
+    background-size: cover;
+    background-image: url(./blob-scene-haikei.svg);
+    height: 100vh;
+    color: white;
+    
+}
+
+
+/* Styles for the student dashboard profile icon */
+.profile-icon {
+    display: flex;
+    flex-direction: row; /* Ensure horizontal alignment */
+    align-items: center; /* Center items vertically */
+    position: relative; /* Set position relative for dropdown positioning */
+    
+}
+
+#firstNameInitial {
+    border-radius: 100px; 
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    font-size: 20px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+#firstName {
+    font-size: 20px;
+    font-weight: normal;
+    margin-left: 10px; /* Add margin to separate from the icon */
+}
+
+
+.search-container {
+    margin: 0 50px;
+    width: fit-content;
+}
+
+#searchInput {
+    display: block;
+    width: 100%; /* Fixed width for a narrower search bar */
+    margin: 0;
+    padding: 10px;
+    border: none;
+    border-radius: 10px 10px 0 0;
+    font-size: 16px;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 10px 0 40px rgba(0, 0, 0, 1);
+    font-family: Georgia; /*Arial, sans-serif*/
+}
+
+.video-card {
+    display: block;
+    margin: 0 50px 30px 50px;
+    border-radius: 0 0 10px 10px; /* Only round bottom corners */
+    box-shadow: 10px 20px 40px rgba(0, 0, 0, 1);
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    height: 50%;
+    overflow-y: scroll;
+}
+
+.folder {
+    background-color: rgba(34, 238, 187, 0.5)/* rgba(46, 179, 90, 0.5)*/;
+    border-radius: 5px;
+    margin: 10px 0;
+    cursor: pointer;
+    padding: 10px;
+    width: 90%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.folder .arrow-icon {
+    transition: transform 0.3s ease;
+}
+
+.folder.active .arrow-icon {
+    transform: rotate(180deg);
+}
+
+.folder i {
+    margin-right: 10px;
+}
+
+.folder:hover {
+    background-color:rgba(34, 238, 187, 0.6);
+}
+
+.folder-content {
+    display: none;
+    padding: 0px 0;
+}
+
+.folder.active + .folder-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.video-item {
+    border: 2px solid #ccc; /* Adjust the color and thickness as needed */
+    border-radius: 8px; /* Optional: Adds rounded corners */
+    padding: 10px; /* Adds space inside the border */
+    margin: 10px 0; /* Adds space between video items */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+.video-item video {
+    width: 150px; /* Set width */
+    height: 150px; /* Set height to match width for square */
+    object-fit: cover; /* Ensure the video covers the area without distortion */
+}
+
+header {
+    display: flex;
+    justify-content: space-between;  /* Left and right elements are spaced apart */
+    align-items: center;
+    position: relative;  /* Ensures absolute positioning works inside */
+    padding: 10px;
+    margin: 0;
+}
+
+header .heading {
+    position: absolute;  
+    left: 50%;  
+    top:0px;
+    transform: translateX(-50%);  /* Ensures perfect centering */
+    font-size: 15px;
+    font-weight: bold;
+   
+    
+}
+header .image {
+    flex-shrink: 0; 
+}
+
+
+.dropbtn{
+    padding: 16px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.1);
+    margin: 5px;
+    margin-right: 120px;
+    display: block;
+    font-weight: bold;
+    border: none;
+    border-radius: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+
+}
+
+
+/* Dropdown styles */
+.dropdown-content {
+    display: none; /* Hidden by default */
+    position: absolute; /* Position it below the profile icon */
+    z-index: 10; /* Ensure it appears above other content */
+    top: 100%; /* Position it below the profile icon */
+    text-align: center;
+    padding: 10px;
+    background-color: rgba(0, 0, 128, 1);
+    margin-right: 120px;
+    max-width: 350px;
+    font-size: 15px;
+    font-weight: bold;
+    border: none;
+    border-radius: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+
+.dropdown-content a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: white; /* Default color */
+}
+
+.dropdown-content a:hover {
+    background-color: rgb(59, 59, 139);
+    border-radius: 10px;
+}
+
+/* Hover effect for profile icon and heading */
+#firstNameInitial, #firstName {
+    cursor: pointer;
+}
+
+/* Show dropdown on hover over profile elements */
+#firstNameInitial:hover ~ .dropdown-content,
+#firstName:hover ~ .dropdown-content {
+    display: block; /* Show dropdown */
+}
+
+.dropdown{
+    /*position: relative;
+    display: inline-block;*/
+    display: block;
+    margin: auto;
+
+}
+
+.upload {
+    color: white;
+    padding: 10px 20px;
+    display: block;
+    margin: 2px auto 5px auto;
+    font-size: 20px;
+    border: 1px solid rgba(0, 0, 0, 1); 
+    border-radius: 30px;
+    background-color: rgba(102, 0, 51, 0.8);
+    box-shadow: 10px 20px 40px rgba(0, 0, 0, 1);
+    font-family: Georgia;
+
+}
+
+.upload:hover{
+    cursor: pointer;
+    background-color: rgba(85, 0, 43, 0.8);
+
+}
+
+
+.delete-button:hover{
+    background: red;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.video-item h3, .video-item p {
+    word-wrap: break-word; /* Allows long words to be broken and wrap onto the next line */
+    overflow-wrap: break-word; /* Ensures that the text will wrap within the container */
+    max-width: 100%; /* Ensures the text does not exceed the width of the container */
+}

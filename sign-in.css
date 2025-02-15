@@ -1,0 +1,109 @@
+body {
+    font-family: Georgia;
+    aspect-ratio: 960/540;
+    width: 100%;
+    background-size: cover;
+    background-image: url(./layered-waves-haikei\(1\).svg);
+    min-height: 100vh;
+}
+
+
+
+.card {
+    background: rgba(255, 127, 80, 0.93);
+    position: relative; /* Allow absolute positioning of child elements */
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+    padding: 20px;
+    margin: 50px auto;
+    width: 28%;
+    text-align: center;
+    height: 70%;
+    flex-direction: column;
+    align-items: center;
+    position: top;
+}
+
+form input {
+    width: 70%; 
+    height: 20px;
+    padding: 10px;
+    padding-left: 30px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.card button {
+    width: 40%;
+    background: linear-gradient(-45deg, #000080 40%, #d7036d 50%, #000080 60%);
+    background-size: 300%;
+    background-position-x: 100%;
+    animation-duration: 4s;
+    animation-name: shimmer;
+    animation-iteration-count: infinite;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    font-family: Georgia;
+    font-size: 15px;
+}
+
+@keyframes shimmer {
+    to {
+       background-position-x: -1%
+    }
+}
+
+.card button:hover {
+    background-color: #0056b3;
+}
+
+.submit {
+    margin-top: 10px;
+    margin-bottom: 8px;
+}
+
+.submit:hover {
+    box-shadow: 10px 10px 5px 2px rgba(46, 179, 90, 0.2);
+}
+
+
+#errorMessage {
+    border: 2px solid yellow; /* Light border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding for better visibility */
+    color: black; /* Text color */
+    display: none; /* Initially hidden */
+}
+
+h2 {
+    font-family: "Roboto", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: italic;
+    font-size: 35px;
+    letter-spacing: 0.5px;
+    color: black;
+  }
+
+.input-container {
+    width: 100%;
+    position: relative;
+    display: flex; /* Enable flexbox */
+    justify-content: center; /* Center the input fields */
+    
+  }
+
+.input-container i {
+    position: absolute;
+    left: 12%; /* Position the icon on the left */
+    top: 50%; /* Center the icon vertically */
+    transform: translateY(-50%); /* Adjust for vertical centering */
+    font-size: 17px; /* Adjust icon size if necessary */
+    color: #ccc;
+    
+}
+

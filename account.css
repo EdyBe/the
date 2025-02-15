@@ -1,0 +1,97 @@
+body {
+    font-family: Georgia;
+    aspect-ratio: 960/540;
+    width: 100%;
+    background-size: cover;
+    background-image: url(./layered-waves-haikei\(1\).svg);
+    min-height: 100vh;
+}
+
+h1 {
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    color: white;
+}
+
+p{
+    font-family: 'Georgia';
+    font-size: 30px;
+}
+
+.account-info {
+    display: block;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: linear-gradient(135deg, rgba(255, 127, 80, 0.93), rgba(255, 193, 7, 0.93));
+    position: relative; 
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    padding: 30px;
+    margin: 50px auto;
+    width: 90%; /* Make it responsive */
+    max-width: 400px; /* Limit max width */
+    text-align: center;
+    height: auto; /* Allow height to adjust based on content */
+    flex-direction: column;
+    align-items: center;
+}
+
+.delete-account {
+    margin-top: 20px;
+}
+
+.delete-account button {
+    width: 50%; 
+    padding: 12px; 
+    background-color: #ff4d4d; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s, transform 0.2s; /* Add transition for effects */
+}
+
+.delete-account button:hover {
+    background-color: #e60000; /* Darker red on hover */
+    transform: scale(1.05); /* Slightly enlarge button on hover */
+}
+
+.delete-account button:disabled {
+    background-color: #ccc; 
+    cursor: not-allowed; 
+}
+
+#backButton {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000; /* Ensure it is above other elements */
+    padding: 13px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    cursor: pointer;
+    border-color: #2eb ;
+    color: white;
+
+}
+
+
+.back-button {
+    background-color: rgba(0, 0, 82, 0.2);
+    color: white;
+    border-color: #2eb ;
+    padding: 13px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px; /* Ensure spacing below the button */
+    font-family:'Georgia';
+    font-size: 100%;
+}
+
+
+.class-code-management{
+    border: solid;
+    border-color: white;
+}

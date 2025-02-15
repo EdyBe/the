@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Video</title>
+    <link rel="stylesheet" href="upload-.css">
+</head>
+<body>
+    <header>
+        <button class="back-button" onclick="location.href='student-.html'">Back</button>
+        <div class="image">
+            <img src="prolerus logo it6.png" alt="Logo" width="90" height="90" />
+    </div> 
+    </header>
+    <div class="card">
+    <div class="upload-container">
+        <h2>Upload Video</h2>
+        <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="email" id="userEmail"> <!-- Hidden email field -->
+            <input type="text" name="title" placeholder="Video Title" required>
+            <input type="text" name="subject" placeholder="Subject" required>
+            <input type="file" name="video" accept="video/*" required>
+            <select name="classCode" required>
+                <option value="" disabled selected>Select Class Code</option>
+                <!-- Class codes will be populated here -->
+            </select>
+            <button type="submit">Upload Video</button>
+            <p class="error-message" id="uploadErrorMessage"></p>
+        </form>
+    </div>
+    </div>
+    <script>
+        // Fetch class codes from the server
+        async function fetchClassCodes() {
+            try {
+                const email = document.getElementById('userEmail').value; // Get the user's email
+                const response = await fetch(`/class-codes?email=${encodeURIComponent(email)}`); // Endpoint to get class codes
+                const classCodes = await response.json();
+                const classCodeSelect = document.querySelector('select[name="classCode"]');
+
+                classCodes.forEach(code => {
+                    const option = document.createElement('option');
+                    option.value = code;
+                    option.textContent = code;
+                    classCodeSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching class codes:', error);
+            }
+        }
+
+        // Populate the hidden email field from session or previous page
+        document.getElementById('userEmail').value = sessionStorage.getItem('userEmail') || '';
+
+        // Call the function to fetch class codes on page load
+        fetchClassCodes();
+    </script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="account.css">
+    <title>Account Page</title>
+</head>
+<body>
+    <heading><h1>My Profile</h1></heading>
+    <div class="card">
+        <div class="account-info">
+            <p id="user-name">Name: [User's Name]</p>
+            <p id="class-codes">Class Codes: [Class Codes]</p>
+            <p id="school-name">School: [School Name]</p>
+
+            <div class="class-code-management">
+                <h2>Manage Class Codes</h2>
+                <div>
+                    <input type="text" id="add-class-code" placeholder="Add Class Code">
+                    <button id="add-button">Add Class Code</button>
+                </div>
+                <div>
+                    <input type="text" id="delete-class-code" placeholder="Delete Class Code">
+                    <button id="delete-class-code-button">Delete Class Code</button>
+                </div>
+                <p id="error-message" style="color: red;"></p> <!-- Error message display -->
+                <p id="success-message" style="color: green;"></p> <!-- Success message display -->
+            </div>
+            <div class="delete-account">
+                <button id="delete-account-button">Delete Account</button>
+            </div>
+        </div>
+    </div>
+
+    <button id="backButton">Back</button>
+
+    <!-- Modal for account deletion confirmation -->
+    <div id="delete-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Confirm Account Deletion</h2>
+            <p>Type "I want to delete my account" to confirm:</p>
+            <input type="text" id="confirmation-input" placeholder="Type here">
+            <button id="confirm-delete-button" disabled>Confirm Delete</button>
+        </div>
+    </div>
+
+    <script>
+        // Fetch user information when the page loads
+        window.onload = async function() {
+            const email = sessionStorage.getItem('userEmail'); // Get the email from sessionStorage
+
+            if (!email) {
+                console.error('User not authenticated.');
+                return;
+            }
+
+            const response = await fetch(`/user-info?email=${encodeURIComponent(email)}`);
+            const data = await response.json();
+
+            if (response.ok) {
+            document.getElementById('user-name').innerText = `Name: ${data.firstName}`;
+            document.getElementById('class-codes').innerText = `Class Codes: ${data.classCodes.join(", ")}`;
+            document.getElementById('school-name').innerText = `School: ${data.schoolName}`; // Add this line
+        } else {
+                console.error('Error fetching user info:', data.message);
+            }
+        };
+
+        // Add event listener for adding class code
+        document.getElementById('add-button').addEventListener('click', async function() {
+            const classCode = document.getElementById('add-class-code').value;
+            const email = sessionStorage.getItem('userEmail'); // Get the email from sessionStorage
+
+            if (!email || !classCode) {
+                console.error('Email and class code are required.');
+                return;
+            }
+
+            const response = await fetch('/update-user', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, classCode, action: 'add' })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                console.log('Class code added successfully:', data.message);
+                document.getElementById('error-message').innerText = ''; // Clear any previous error messages
+                document.getElementById('success-message').innerText = "Class code added successfully!"; // Display success message
+                document.getElementById('add-class-code').value = ''; // Clear input field
+                setTimeout(() => {
+                    location.reload(); // Refresh the page after a short delay
+                }, 0); // Adjust the delay as needed
+            } else {
+                console.error('Error adding class code:', data.message);
+                document.getElementById('error-message').innerText = data.message; // Display error message
+                document.getElementById('success-message').innerText = ''; // Clear success message
+            }
+        });
+
+        // Add event listener for deleting class code
+        document.getElementById('delete-class-code-button').addEventListener('click', async function() {
+            const classCode = document.getElementById('delete-class-code').value;
+            const email = sessionStorage.getItem('userEmail'); // Get the email from sessionStorage
+
+            if (!email || !classCode) {
+                console.error('Email and class code are required.');
+                return;
+            }
+
+            const response = await fetch('/update-user', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, classCode, action: 'delete' })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                console.log('Class code deleted successfully:', data.message);
+                document.getElementById('error-message').innerText = ''; // Clear any previous error messages
+                document.getElementById('success-message').innerText = "Class code deleted successfully!"; // Display success message
+                document.getElementById('delete-class-code').value = ''; // Clear input field
+                setTimeout(() => {
+                    location.reload(); // Refresh the page after a short delay
+                }, 0); // Adjust the delay as needed
+            } else {
+        console.error('Error deleting class code:', data.message);
+        if (data.message === 'Class code does not exist') {
+            document.getElementById('error-message').innerText = "Invalid class code"; // Display invalid class code message
+        } else {
+            document.getElementById('error-message').innerText = data.message; // Display error message
+        }
+        document.getElementById('success-message').innerText = ''; // Clear success message
+    }
+});
+
+
+        //document.getElementById('error-message').innerText = data.message; // Display error message
+        //document.getElementById('success-message').innerText = ''; // Clear success message
+    //}
+        //});
+
+        const deleteButton = document.getElementById('delete-account-button');
+        const deleteModal = document.getElementById('delete-modal');
+        const closeModal = document.getElementsByClassName('close')[0];
+        const confirmationInput = document.getElementById('confirmation-input');
+        const confirmDeleteButton = document.getElementById('confirm-delete-button');
+
+        deleteButton.addEventListener('click', function() {
+            deleteModal.style.display = "block"; // Show the modal
+        });
+
+        closeModal.addEventListener('click', function() {
+            deleteModal.style.display = "none"; // Hide the modal
+        });
+
+        window.onclick = function(event) {
+            if (event.target == deleteModal) {
+                deleteModal.style.display = "none"; // Hide the modal if clicked outside
+            }
+        };
+
+        confirmationInput.addEventListener('input', function() {
+            if (confirmationInput.value === "I want to delete my account") {
+                confirmDeleteButton.disabled = false;
+            } else {
+                confirmDeleteButton.disabled = true;
+            }
+        });
+
+        confirmDeleteButton.addEventListener('click', async function() {
+            const email = sessionStorage.getItem('userEmail'); // Get the email from sessionStorage
+            if (!email) {
+                alert('User not authenticated.');
+                return;
+            }
+
+            const confirmation = confirm("Are you sure you want to delete your account?");
+            if (confirmation) {
+                const response = await fetch(`/delete-account?email=${encodeURIComponent(email)}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert("Account deleted successfully!");
+                    window.location.href = '/sign-in.html';
+                } else {
+                    const data = await response.json();
+                    alert('Error deleting account: ' + data.message);
+                }
+            }
+            deleteModal.style.display = "none"; // Hide the modal after action
+        });
+
+        // Back button functionality
+        document.getElementById('backButton').addEventListener('click', function() {
+            const referrer = document.referrer;
+            if (referrer.includes('teacher.html')) {
+                window.location.href = 'teacher.html';
+            } else if (referrer.includes('student.html')) {
+                window.location.href = 'student.html';
+            } else {
+                window.history.back(); // Fallback to the default back behavior
+            }
+        });
+    </script>
+
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; 
+            max-width: 400px; 
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</body>
+</html>

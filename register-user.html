@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join the Squad</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="register-user.css">
+</head>
+<body>
+    <div class="card">
+        <h2>Join the Squad</h2>
+        <form id="registerForm" action="/register" method="POST">
+            <input type="text" name="firstName" placeholder="First Name" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="text" name="classCodes" placeholder="Enter Class Codes (comma-separated)" required>
+            <input type="text" id="licenseKey" name="licenseKey" placeholder="License Key" required>
+            <input type="text" name="schoolName" placeholder="School Name" required> <!-- New input field -->
+            <select name="accountType" class="account" required>
+                <option value="" disabled selected>Select your account type</option>
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+            </select>
+            <button class="submit" type="submit"> Register <i class="fa fa-user-plus" aria-hidden="true"></i></button>
+            <p class="error-message" id="registerErrorMessage"></p>
+        </form>
+        <p><a href="sign-in.html">Back to sign in</a></p>
+    </div>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            // Validate license key based on account type
+            const validLicenseKeys = {
+                student: ["STUDENT_KEY_1", "STUDENT_KEY_2"], // Replace with actual student license keys
+                teacher: ["TEACHER_KEY_1", "TEACHER_KEY_2"]  // Replace with actual teacher license keys
+            };
+
+            if (!validLicenseKeys[data.accountType].includes(data.licenseKey)) {
+                document.getElementById('registerErrorMessage').innerText = 'Invalid license key for the selected account type.';
+                return; // Stop form submission
+            }
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    // Handle successful registration
+                    const accountType = data.accountType; // Get the account type
+                    alert(result.message); // Show success message
+                    // Store user email in session storage
+                    sessionStorage.setItem('userEmail', data.email); // Store the user email in session storage
+                    if (accountType === 'student') {
+                        window.location.href = 'student-.html';
+                    } else if (accountType === 'teacher') {
+                        window.location.href = 'teacher-.html';
+                    }
+                } else {
+                    // Display error message
+                    document.getElementById('registerErrorMessage').innerText = result.message;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('registerErrorMessage').innerText = 'An error occurred. Please try again.';
+            }
+        });
+    </script>
+</body>
+</html>
